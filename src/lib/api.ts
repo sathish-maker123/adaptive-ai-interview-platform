@@ -20,11 +20,12 @@ export async function invoke<T>(
   }
 
   const { data, error } = await supabase.functions.invoke(name, {
-    body: JSON.stringify(body),
+    body,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(error.message);
+  }
 
   return data as T;
 }
-
