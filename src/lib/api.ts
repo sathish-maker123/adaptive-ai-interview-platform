@@ -6,9 +6,7 @@ export async function invoke<T>(
   body: Record<string, unknown>
 ): Promise<T> {
   if (!supabase) {
-    throw new Error(
-      "Supabase is not configured. Add your project credentials."
-    );
+    throw new Error("Supabase is not configured. Add your project credentials.");
   }
 
   const {
@@ -19,19 +17,23 @@ export async function invoke<T>(
     throw new Error("Please sign in first.");
   }
 
-  const { data, error } = await supabase.functions.invoke(name, {
-    body,
-  });
+  const { data, error } = await supabase.functions.invoke(name, { body });
 
   if (error) {
-    const context = (error as { context?: Response }).context;
+    const context = (error as { context?: unknown }).context;
 
-    if (context) {
-      const result = await context.clone().json().catch(() => null);
+    if (
+      context &&
+      typeof context === "object" &&
+      typeof (context as { clone?: unknown }).clone === "function"
+    ) {
+      const response = context as Response;
+      const result = await response.clone().json().catch(() => null);
+
       throw new Error(result?.error || error.message);
     }
 
-    throw new Error(error.message);
+    throw new Error(error.message || "Unable to contact the server.");
   }
 
   return data as T;
