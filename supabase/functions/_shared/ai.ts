@@ -13,14 +13,12 @@ export async function askAI(system: string, input: unknown) {
       headers: {
         "Content-Type": "application/json",
         "x-goog-api-key": key,
-        "Api-Revision": "2026-05-20",
       },
       body: JSON.stringify({
         model: "gemini-3.5-flash-lite",
-        input:
-          `Instructions:\n${system}\n\n` +
-          `Input:\n${JSON.stringify(input)}\n\n` +
-          "Return only valid JSON. Do not use Markdown code fences.",
+        system_instruction:
+          system + "\nReturn only valid JSON. Do not use Markdown.",
+        input: JSON.stringify(input),
         store: false,
       }),
     }
