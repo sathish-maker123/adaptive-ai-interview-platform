@@ -24,6 +24,13 @@ export async function invoke<T>(
   });
 
   if (error) {
+    const context = (error as { context?: Response }).context;
+
+    if (context) {
+      const result = await context.clone().json().catch(() => null);
+      throw new Error(result?.error || error.message);
+    }
+
     throw new Error(error.message);
   }
 
