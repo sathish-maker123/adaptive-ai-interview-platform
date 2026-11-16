@@ -1,0 +1,7 @@
+project_id = "interviewai"
+[functions.interview-create]
+verify_jwt = true
+[functions.interview-answer]
+verify_jwt = true
+[functions.interview-complete]
+verify_jwt = true
